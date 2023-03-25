@@ -33,31 +33,45 @@ public:
 	bool IsEndOverlap;
 
 	UPROPERTY()
-		float Timer;
+		float Timer;	
 
 	UPROPERTY()
-		float TimeLimit = 2.0f;
+		float TimeLimit = 3.0f;
 	UPROPERTY()
 		int32 HitCount;
 	UPROPERTY()
 		int32 HitCountLimit = 2;
 
 	UPROPERTY()
-		FVector ShakeDirec;
+		bool IsLast;
+	UPROPERTY()
+		int32 BrokenCount;
 
-	UPROPERTY()
-		bool IsBroken;
-	UPROPERTY()
-		int32 ShakeCount = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		class UStaticMeshComponent* InvisibleMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		class UStaticMeshComponent* VisibleMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class UBoxComponent* BoxComp;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		class UGeometryCollectionComponent* BreakableMeshComp;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		class UChildActorComponent* ImpactActor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TSubclassOf<class AImpactPoint> ImpactPointActor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		class UMaterialInterface* InvisibleMat;
+	
+
 	UFUNCTION()
-		void BreakableObjectBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+		void BreakableObjectBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
-	//UFUNCTION()
-		//void BreakableObjectEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-
+	UFUNCTION()
+		void BreakableObjectEndOverlap(AActor* OverlappedActor, AActor* OtherActor);
 };
