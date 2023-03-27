@@ -28,10 +28,9 @@ public:
 
 	class UFieldSystemMetaData* FallData;
 	class UFieldSystemMetaData* UpData;
-	class UFieldSystemComponent* ImpactMake;
 
 	UPROPERTY()
-		float SphereCompRadius = 70;
+		float SphereCompRadius = 80;
 
 	UFUNCTION(BlueprintCallable)
 		void StartImpact();

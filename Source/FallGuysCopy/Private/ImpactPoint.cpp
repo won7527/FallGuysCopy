@@ -14,16 +14,17 @@ AImpactPoint::AImpactPoint()
 
 	ImpactFall = CreateDefaultSubobject<URadialFalloff>(TEXT("ImpactFall"));
 	ImpactUp = CreateDefaultSubobject<URadialVector>(TEXT("ImpactUp"));
-	ImpactMake = CreateDefaultSubobject<UFieldSystemComponent>(TEXT("ImpactMake"));
 
 }
 
 void AImpactPoint::StartImpact()
 {
-	ImpactFall->SetRadialFalloff(10000, 0, 1, 0, SphereCompRadius, SphereComp->GetComponentLocation(), Field_FallOff_None);
-	ImpactUp->SetRadialVector(1000000, SphereComp->GetComponentLocation());
-	ImpactMake->ApplyPhysicsField(true, Field_ExternalClusterStrain, FallData, ImpactFall);
-	ImpactMake->ApplyPhysicsField(true, Field_ExternalClusterStrain, UpData, ImpactFall);
+	
+	ImpactFall->SetRadialFalloff(100000, 0, 1, 0, SphereComp->GetScaledSphereRadius(), SphereComp->GetComponentLocation(), Field_FallOff_None);
+	ImpactUp->SetRadialVector(10000000000, SphereComp->GetComponentLocation());
+
+	GetFieldSystemComponent()->ApplyPhysicsField(true, Field_ExternalClusterStrain, FallData, ImpactFall);
+	GetFieldSystemComponent()->ApplyPhysicsField(true, Field_LinearForce, FallData, ImpactUp);
 	
 }
 	

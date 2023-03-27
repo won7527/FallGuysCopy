@@ -14,13 +14,13 @@ ABreakableObject::ABreakableObject()
 
 	BoxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComp"));
 	SetRootComponent(BoxComp);
-	BoxComp->SetRelativeScale3D(FVector(1.0, 1.0, 0.33));
+	BoxComp->SetRelativeScale3D(FVector(2.0, 2.0, 0.66));
 	OnActorBeginOverlap.AddDynamic(this, &ABreakableObject::BreakableObjectBeginOverlap);
 	OnActorEndOverlap.AddDynamic(this, &ABreakableObject::BreakableObjectEndOverlap);
 
 	InvisibleMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("InvisibleMesh"));
 	InvisibleMesh->SetupAttachment(RootComponent);
-	InvisibleMesh->SetRelativeScale3D(FVector(0.5, 0.5, 0.5));
+	InvisibleMesh->SetRelativeScale3D(FVector(0.6, 0.6, 0.5));
 	VisibleMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisibleMesh"));
 	VisibleMesh->SetupAttachment(RootComponent);
 	VisibleMesh->SetRelativeScale3D(FVector(0.6));
@@ -80,7 +80,8 @@ ABreakableObject::ABreakableObject()
 void ABreakableObject::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	BreakableMeshComp->SetVisibility(false);
 }
 
 // Called every frame
@@ -117,7 +118,7 @@ void ABreakableObject::Tick(float DeltaTime)
 	
 	if (IsLast && BrokenCount < 5)
 	{
-	Timer += DeltaTime;
+		Timer += DeltaTime;
 		if (Timer * 7 <= 1)
 		{
 			VisibleMesh->SetRelativeScale3D(FMath::Lerp<FVector, float>(FVector(0.6f), FVector(0.65f), Timer * 7));
@@ -136,11 +137,14 @@ void ABreakableObject::Tick(float DeltaTime)
 	else if (IsLast && BrokenCount == 5)
 	{
 		VisibleMesh->SetVisibility(false);
+		BreakableMeshComp->SetVisibility(true);
 		InvisibleMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		BreakableMeshComp->SetSimulatePhysics(true);
-		BreakableMeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		Cast<AImpactPoint>(ImpactActor->GetChildActor())->StartImpact();
+		BreakableMeshComp->AddImpulse(FVector(0, 0, 400), FName("None"), true);
+		//BreakableMeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		BrokenCount++;
+		
 		
 	}
 	else if (IsLast && BrokenCount > 5)
