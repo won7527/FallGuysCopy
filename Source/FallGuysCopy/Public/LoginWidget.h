@@ -26,6 +26,12 @@ class FALLGUYSCOPY_API ULoginWidget : public UUserWidget
 	class UScrollBox* sbox_RoomList;
 	class UButton* btn_FindBack;
 	class UButton* btn_Refresh;
+	class UWidgetSwitcher* widgetSwicher;
 
+protected:
+	virtual void NativeConstruct() override;
 
+public:
+	void ClickStart();
+	void GoCreate();
 };
