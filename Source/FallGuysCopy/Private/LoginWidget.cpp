@@ -20,6 +20,7 @@ void ULoginWidget::NativeConstruct()
 	btn_start->OnClicked.AddDynamic(this, &ULoginWidget::ClickStart);
 	btn_goCreate->OnClicked.AddDynamic(this, &ULoginWidget::GoCreate);
 	*/
+	btn_MainStart->OnClicked.AddDynamic(this, &ULoginWidget::WidgetStart);
 
 }
 
@@ -35,5 +36,12 @@ void ULoginWidget::ClickStart()
 
 void ULoginWidget::GoCreate()
 {
+
+}
+
+void ULoginWidget::WidgetStart()
+{
+	widgetSwicher->SetActiveWidgetIndex(1);
+	UE_LOG(LogTemp, Warning, TEXT("aaaaa"));
 
 }
