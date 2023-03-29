@@ -17,6 +17,7 @@ public:
 	AFallGuysCharacter();
 
 protected:
+	virtual void PostInitializeComponents() override;
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -37,24 +38,54 @@ public:
 	UPROPERTY(EditAnywhere,Category = "Input")
 	class UInputAction* IA_ChaJump;
 
+	UPROPERTY(EditAnywhere, Category = "Input")
+		class UInputAction* IA_Dash;
+
+	UPROPERTY(EditAnywhere, Category = "Input")
+		class UInputAction* IA_Hold;
+
 	UPROPERTY(EditAnywhere)
 	class UCameraComponent* cameraComp;
 	UPROPERTY(EditAnywhere)
 	class USpringArmComponent* springArm;
+
+	class UPlayerAnim* PlayerAnim;
 	
 	//잡기범위
 	UPROPERTY(EditAnywhere, Category = "Hold")
 	float HoldRange = 50;
 
 	void Move(const FInputActionValue& Values);
+	void MoveEnd();
 	void Look(const FInputActionValue& Values);
 	void Jumping();
+	void StopJumping();
+	void Holding();
+	void Dash();
 	//잡기
 	UFUNCTION()
 	void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	void Holding();
 	
 	
 	bool isOverlap = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DashPower = 400;	
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float FallingTime = 1.0f;
+
+	UPROPERTY()
+		float CoolTime;
+	
+	UPROPERTY()
+		FVector StartLoc;
+	UPROPERTY()
+		FVector EndLoc;
+
+
+	UPROPERTY()
+		bool IsCool;
+
 
 };
