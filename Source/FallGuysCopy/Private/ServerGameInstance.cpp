@@ -5,7 +5,7 @@
 
 UServerGameInstance::UServerGameInstance()
 {
-
+	sessionID = "Test Session";
 }
 
 void UServerGameInstance::Init()

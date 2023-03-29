@@ -17,5 +17,6 @@ class FALLGUYSCOPY_API UServerGameInstance : public UGameInstance
 	UServerGameInstance();
 	virtual void Init() override;
 
+	FName sessionID;
 
 };
