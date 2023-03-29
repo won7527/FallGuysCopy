@@ -36,7 +36,7 @@ public:
 		float Timer;	
 
 	UPROPERTY()
-		float TimeLimit = 3.0f;
+		float TimeLimit = 1.0f;
 	UPROPERTY()
 		int32 HitCount;
 	UPROPERTY()
@@ -74,4 +74,7 @@ public:
 
 	UFUNCTION()
 		void BreakableObjectEndOverlap(AActor* OverlappedActor, AActor* OtherActor);
+
+
+	class AFallGuysCharacter* Player;
 };

@@ -177,7 +177,7 @@ void AFallGuysCharacter::Holding()
 
 void AFallGuysCharacter::Dash()
 {
-	if (!PlayerAnim->IsDive && !PlayerAnim->IsJump)
+	if (!PlayerAnim->IsDive && !PlayerAnim->IsJump && !PlayerAnim->IsFall)
 	{
 		
 		IsCool = true;

@@ -5,6 +5,7 @@
 #include "Components/BoxComponent.h"
 #include "GeometryCollection/GeometryCollectionComponent.h"
 #include "ImpactPoint.h"
+#include "FallGuysCharacter.h"
 
 // Sets default values
 ABreakableObject::ABreakableObject()
@@ -144,7 +145,11 @@ void ABreakableObject::Tick(float DeltaTime)
 		BreakableMeshComp->AddImpulse(FVector(0, 0, 400), FName("None"), true);
 		//BreakableMeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		BrokenCount++;
-		
+
+		if (Player)
+		{
+			Player->Jumping();
+		}
 		
 	}
 	else if (IsLast && BrokenCount > 5)
@@ -161,8 +166,12 @@ void ABreakableObject::Tick(float DeltaTime)
 
 void ABreakableObject::BreakableObjectBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
-	UE_LOG(LogTemp, Warning, TEXT("asdas"));
+	UE_LOG(LogTemp, Warning, TEXT("IsIn"));
 	IsOnObject = true;
+	if (!Player)
+	{
+		Player = Cast<AFallGuysCharacter>(OtherActor);
+	}
 	
 }
 
@@ -171,4 +180,8 @@ void ABreakableObject::BreakableObjectEndOverlap(AActor* OverlappedActor, AActor
 	UE_LOG(LogTemp, Warning, TEXT("IsOut"));
 	IsOnObject = false;
 	Timer = 0;
+	if (Player)
+	{
+		Player = nullptr;
+	}
 }
