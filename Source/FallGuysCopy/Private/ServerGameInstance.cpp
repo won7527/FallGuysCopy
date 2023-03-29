@@ -50,4 +50,22 @@ void UServerGameInstance::FindMySession()
 	sessionSearch = MakeShareable(new FOnlineSessionSearch());
 	sessionSearch->bIsLanQuery = IOnlineSubsystem::Get()->GetSubsystemName() == "Null";
 	sessionSearch->MaxSearchResults = 30;
+	sessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::GreaterThanEquals);
+	sessionInterface->FindSessions(0, sessionSearch.ToSharedRef());
+}
+
+void UServerGameInstance::JoinMySession(int32 sessionIdx)
+{
+	FOnlineSessionSearchResult selectedSession = sessionSearch->SearchResults[sessionIdx];
+	sessionInterface->JoinSession(0, sessionID, selectedSession);
+}
+
+void UServerGameInstance::OnCreateSessionComplete(FName sessionName, bool bisSuccess)
+{
+	FString result = bisSuccess ? TEXT("Create Session Success") : TEXT("Create Session Failed");
+	UE_LOG(LogTemp, Warning, TEXT("%s : %s"), *result, *sessionName.ToString());
+	if (bisSuccess)
+	{
+		GetWorld()->ServerTravel("/Game/Maps/MainMap?Listen");
+	}
 }

@@ -28,9 +28,6 @@ public:
 	class UButton* btn_GoFind;
 	
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta=(BindWidget))
-	class UEditableText* editText_RoomName;
-	
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta=(BindWidget))
 	class UTextBlock* text_PlayerCount;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta=(BindWidget))
@@ -50,7 +47,10 @@ public:
 
 	//UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta=(BindWidget))
 	//class UButton* btn_Refresh;
-
+	
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta=(BindWidget))
+	class UEditableText* editText_roomName;
+	
 	
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta=(BindWidget))
 	class UWidgetSwitcher* widgetSwicher;

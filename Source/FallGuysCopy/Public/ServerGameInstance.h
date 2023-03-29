@@ -22,9 +22,13 @@ class FALLGUYSCOPY_API UServerGameInstance : public UGameInstance
 	IOnlineSessionPtr sessionInterface;
 	TSharedPtr<FOnlineSessionSearch> sessionSearch;
 
-
+public:
 	UFUNCTION()
 	void CreateMySession(FString roomName, int32 playerCount);
 	UFUNCTION()
 	void FindMySession();
+	UFUNCTION()
+	void JoinMySession(int32 sessionIdx);
+	UFUNCTION()
+	void OnCreateSessionComplete(FName sessionName, bool bisSuccess);
 };
