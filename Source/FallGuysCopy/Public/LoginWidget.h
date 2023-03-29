@@ -14,9 +14,9 @@ class FALLGUYSCOPY_API ULoginWidget : public UUserWidget
 {
 	GENERATED_BODY()
 public:
-	/*
+	
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta=(BindWidget))
-	class UEditableTextBox* editText_id;
+	class UEditableText* editText_id;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta=(BindWidget))
 	class UButton* btn_start;
@@ -24,6 +24,7 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta=(BindWidget))
 	class UButton* btn_goCreate;
 
+	/*
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta=(BindWidget))
 	class UButton* btn_GoFind;
 
@@ -61,7 +62,10 @@ protected:
 	virtual void NativeConstruct() override;
 
 public:
+	UFUNCTION()
 	void ClickStart();
+	UFUNCTION()
 	void GoCreate();
+	UFUNCTION()
 	void WidgetStart();
 };
