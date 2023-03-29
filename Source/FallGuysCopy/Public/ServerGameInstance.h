@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "Interfaces/OnlineSessionInterface.h"
 #include "ServerGameInstance.generated.h"
 
 /**
@@ -18,5 +19,12 @@ class FALLGUYSCOPY_API UServerGameInstance : public UGameInstance
 	virtual void Init() override;
 
 	FName sessionID;
+	IOnlineSessionPtr sessionInterface;
+	TSharedPtr<FOnlineSessionSearch> sessionSearch;
 
+
+	UFUNCTION()
+	void CreateMySession(FString roomName, int32 playerCount);
+	UFUNCTION()
+	void FindMySession();
 };
