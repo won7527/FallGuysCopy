@@ -19,7 +19,7 @@ void ULoginWidget::NativeConstruct()
 	editText_id->SetText(FText::FromString(""));
 	text_PlayerCount->SetText(FText::FromString("2"));
 	sl_playerCount->SetValue(2.0f);
-	editText_RoomName->SetText(FText::FromString(""));
+	editText_roomName->SetText(FText::FromString(""));
 
 	btn_Login->OnClicked.AddDynamic(this, &ULoginWidget::ClickLogin);
 	btn_goCreate->OnClicked.AddDynamic(this, &ULoginWidget::GoCreate);
@@ -56,7 +56,8 @@ void ULoginWidget::WidgetStart()
 
 void ULoginWidget::CreateServer()
 {
-
+	int32 playerCnt = FMath::RoundHalfFromZero(sl_playerCount->GetValue());
+	gameInstance->CreateMySession(editText_roomName->GetText().ToString(), playerCnt);
 }
 
 void ULoginWidget::FindServer()
