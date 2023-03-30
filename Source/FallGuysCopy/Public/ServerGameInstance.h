@@ -10,6 +10,18 @@
 /**
  * 
  */
+USTRUCT()
+struct FSessionInfo
+{
+	GENERATED_BODY()
+
+	FString roomName;
+	int32 currentPlayer;
+
+
+};
+
+
 UCLASS()
 class FALLGUYSCOPY_API UServerGameInstance : public UGameInstance
 {

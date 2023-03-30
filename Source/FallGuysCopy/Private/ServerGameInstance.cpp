@@ -19,7 +19,7 @@ void UServerGameInstance::Init()
 
 		if (sessionInterface != nullptr)
 		{
-
+			//sessionInterface=OnCreateSessionComplete()
 		}
 
 	}
