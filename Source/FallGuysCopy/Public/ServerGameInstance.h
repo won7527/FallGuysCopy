@@ -17,6 +17,8 @@ struct FSessionInfo
 
 	FString roomName;
 	int32 currentPlayer;
+	int32 maxPlayer;
+	int32 ping
 
 
 };
