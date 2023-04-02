@@ -9,6 +9,9 @@
 #include "Components/WidgetSwitcher.h"
 #include "Components/TextBlock.h"
 #include "ServerGameInstance.h"
+#include "SessionSlotWidget.h"
+#include "Kismet/KismetSystemLibrary.h"
+
 
 
 
@@ -28,8 +31,16 @@ void ULoginWidget::NativeConstruct()
 	sl_playerCount->OnValueChanged.AddDynamic(this, &ULoginWidget::MoveSlider);
 	btn_FindBack->OnClicked.AddDynamic(this, &ULoginWidget::GoBack);
 	btn_CreateBack->OnClicked.AddDynamic(this, &ULoginWidget::ClickBack);
+	btn_Refresh->OnClicked.AddDynamic(this, &ULoginWidget::RefreshList);
+	btn_Quit->OnClicked.AddDynamic(this, &ULoginWidget::QuitGame);
 
 	gameInstance = Cast<UServerGameInstance>(GetGameInstance());
+
+	if (gameInstance != nullptr)
+	{
+		gameInstance->searchResultDele.AddDynamic(this, &ULoginWidget::AddNewSlot);
+		gameInstance->searchFininshedDele.AddDynamic(this, &ULoginWidget::RefreshEnabled);
+	}
 }
 
 void ULoginWidget::ClickLogin()
@@ -79,4 +90,37 @@ void ULoginWidget::GoBack()
 void ULoginWidget::ClickBack()
 {
 	widgetSwicher->SetActiveWidgetIndex(2);
+}
+
+void ULoginWidget::RefreshList()
+{
+	sbox_RoomList->ClearChildren();
+	gameInstance->FindMySession();
+	btn_Refresh->SetIsEnabled(false);
+
+}
+
+void ULoginWidget::AddNewSlot(FSessionInfo sessionInfo)
+{
+	USessionSlotWidget* slotWidget = CreateWidget<USessionSlotWidget>(this, sessionSlot);
+	if (slotWidget != nullptr)
+	{
+		slotWidget->text_roomName->SetText(FText::FromString(sessionInfo.roomName));
+		slotWidget->text_playerInfo->SetText(FText::FromString(FString::Printf(TEXT("%d/%d"), sessionInfo.currentPlayer, sessionInfo.maxPlayer)));
+		slotWidget->text_ping->SetText(FText::FromString(FString::Printf(TEXT("%d ms"), sessionInfo.ping)));
+		slotWidget->index = sessionInfo.idx;
+
+		sbox_RoomList->AddChild(slotWidget);
+	}
+}
+
+void ULoginWidget::RefreshEnabled()
+{
+	btn_Refresh->SetIsEnabled(true);
+}
+
+void ULoginWidget::QuitGame()
+{
+	APlayerController* playerCon = GetWorld()->GetFirstPlayerController();
+	UKismetSystemLibrary::QuitGame(GetWorld(), playerCon, EQuitPreference::Quit, true);
 }
