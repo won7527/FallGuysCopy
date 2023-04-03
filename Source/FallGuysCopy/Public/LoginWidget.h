@@ -39,24 +39,31 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta=(BindWidget))
 	class USlider* sl_playerCount;
 	
-	//UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta=(BindWidget))
-	//class UScrollBox* sbox_RoomList;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta=(BindWidget))
+	class UScrollBox* sbox_RoomList;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta=(BindWidget))
 	class UButton* btn_FindBack;
 
-	//UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta=(BindWidget))
-	//class UButton* btn_Refresh;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta=(BindWidget))
+	class UButton* btn_Refresh;
 	
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta=(BindWidget))
 	class UEditableText* editText_roomName;
-	
 	
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta=(BindWidget))
 	class UWidgetSwitcher* widgetSwicher;
 	
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta=(BindWidget))
 	class UButton* btn_MainStart;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta=(BindWidget))
+	class UButton* btn_Quit;
+
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class USessionSlotWidget> sessionSlot;
+
 
 	class UServerGameInstance* gameInstance;
 
@@ -80,4 +87,12 @@ public:
 	void GoBack();
 	UFUNCTION()
 	void ClickBack();
+	UFUNCTION()
+	void RefreshList();
+	UFUNCTION()
+	void AddNewSlot(FSessionInfo sessionInfo);
+	UFUNCTION()
+	void RefreshEnabled();
+	UFUNCTION()
+	void QuitGame();
 };

@@ -19,7 +19,7 @@ void UServerGameInstance::Init()
 
 		if (sessionInterface != nullptr)
 		{
-			//sessionInterface=OnCreateSessionComplete()
+			sessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UServerGameInstance::OnCreateSessionComplete);
 		}
 
 	}
@@ -68,4 +68,53 @@ void UServerGameInstance::OnCreateSessionComplete(FName sessionName, bool bisSuc
 	{
 		GetWorld()->ServerTravel("/Game/Maps/MainMap?Listen");
 	}
+}
+
+void UServerGameInstance::OnFindSessionComplete(bool bWasSuccessful)
+{
+	if (bWasSuccessful)
+	{
+		TArray<FOnlineSessionSearchResult>searchResults = sessionSearch->SearchResults;
+		UE_LOG(LogTemp, Warning, TEXT("Find Session Count : %d"), searchResults.Num());
+
+		for (int32 i = 0; i < searchResults.Num(); i++)
+		{
+			FSessionInfo searchedSessionInfo;
+
+			FString roomName;
+			searchResults[i].Session.SessionSettings.Get(FName("Key_RoomName"), roomName);
+			searchedSessionInfo.roomName = roomName;
+
+			searchedSessionInfo.maxPlayer = searchResults[i].Session.SessionSettings.NumPublicConnections;
+			searchedSessionInfo.currentPlayer = searchedSessionInfo.maxPlayer - searchResults[i].Session.NumOpenPublicConnections;
+
+			searchedSessionInfo.ping = searchResults[i].PingInMs;
+			searchedSessionInfo.idx = i;
+
+			searchResultDele.Broadcast(searchedSessionInfo);
+		}
+	 }
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Find Sessions Failed..."));
+	}
+	searchFininshedDele.Broadcast();
+}
+
+void UServerGameInstance::OnJoinSessionComplete(FName sessionName, EOnJoinSessionCompleteResult::Type joinResult)
+{
+	if (joinResult == EOnJoinSessionCompleteResult::Type::Success)
+	{
+		FString joinAddress;
+		sessionInterface->GetResolvedConnectString(sessionName, joinAddress);
+
+		UE_LOG(LogTemp, Warning, TEXT("Join Address: %s"), *joinAddress);
+
+		if (APlayerController* pc = GetWorld()->GetFirstPlayerController())
+		{
+			pc->ClientTravel(joinAddress, ETravelType::TRAVEL_Absolute);
+		}
+
+	}
+
 }
