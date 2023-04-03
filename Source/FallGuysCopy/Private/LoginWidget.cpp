@@ -27,12 +27,14 @@ void ULoginWidget::NativeConstruct()
 	btn_Login->OnClicked.AddDynamic(this, &ULoginWidget::ClickLogin);
 	btn_goCreate->OnClicked.AddDynamic(this, &ULoginWidget::GoCreate);
 	btn_MainStart->OnClicked.AddDynamic(this, &ULoginWidget::WidgetStart);
+	btn_CreateSession->OnClicked.AddDynamic(this, &ULoginWidget::CreateServer);
 	btn_GoFind->OnClicked.AddDynamic(this, &ULoginWidget::FindServer);
 	sl_playerCount->OnValueChanged.AddDynamic(this, &ULoginWidget::MoveSlider);
 	btn_FindBack->OnClicked.AddDynamic(this, &ULoginWidget::GoBack);
 	btn_CreateBack->OnClicked.AddDynamic(this, &ULoginWidget::ClickBack);
 	btn_Refresh->OnClicked.AddDynamic(this, &ULoginWidget::RefreshList);
 	btn_Quit->OnClicked.AddDynamic(this, &ULoginWidget::QuitGame);
+	
 
 	gameInstance = Cast<UServerGameInstance>(GetGameInstance());
 
@@ -41,6 +43,7 @@ void ULoginWidget::NativeConstruct()
 		gameInstance->searchResultDele.AddDynamic(this, &ULoginWidget::AddNewSlot);
 		gameInstance->searchFininshedDele.AddDynamic(this, &ULoginWidget::RefreshEnabled);
 	}
+	
 }
 
 void ULoginWidget::ClickLogin()
@@ -61,7 +64,7 @@ void ULoginWidget::GoCreate()
 void ULoginWidget::WidgetStart()
 {
 	widgetSwicher->SetActiveWidgetIndex(1);
-	UE_LOG(LogTemp, Warning, TEXT("aaaaa"));
+
 
 }
 
@@ -112,6 +115,7 @@ void ULoginWidget::AddNewSlot(FSessionInfo sessionInfo)
 
 		sbox_RoomList->AddChild(slotWidget);
 	}
+
 }
 
 void ULoginWidget::RefreshEnabled()

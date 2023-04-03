@@ -2,8 +2,8 @@
 
 
 #include "ServerGameInstance.h"
-#include <../Plugins/Online/OnlineSubsystem/Source/Public/OnlineSubsystem.h>
-#include <../Plugins/Online/OnlineSubsystem/Source/Public/OnlineSessionSettings.h>
+#include "OnlineSubsystem.h"
+#include "OnlineSessionSettings.h"
 
 UServerGameInstance::UServerGameInstance()
 {
@@ -12,6 +12,7 @@ UServerGameInstance::UServerGameInstance()
 
 void UServerGameInstance::Init()
 {
+	Super::Init();
 	IOnlineSubsystem* subsys = IOnlineSubsystem::Get();
 	if (subsys)
 	{
@@ -20,9 +21,13 @@ void UServerGameInstance::Init()
 		if (sessionInterface != nullptr)
 		{
 			sessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UServerGameInstance::OnCreateSessionComplete);
+			sessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UServerGameInstance::OnFindSessionComplete);
+			sessionInterface->OnJoinSessionCompleteDelegates.AddUObject(this, &UServerGameInstance::OnJoinSessionComplete);
 		}
 
 	}
+
+
 }
 
 void UServerGameInstance::CreateMySession(FString roomName, int32 playerCount)
@@ -36,7 +41,7 @@ void UServerGameInstance::CreateMySession(FString roomName, int32 playerCount)
 		sessionSettings.bAllowJoinViaPresence = true;
 		sessionSettings.bShouldAdvertise = true;
 		sessionSettings.bIsDedicated = false;
-		sessionSettings.bIsLANMatch = IOnlineSubsystem::Get()->GetSubsystemName() == "Null";
+		sessionSettings.bIsLANMatch = IOnlineSubsystem::Get()->GetSubsystemName() == "NULL";
 		sessionSettings.NumPublicConnections = playerCount;
 		sessionSettings.Set(FName("KEY_RoomName"), roomName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 		sessionInterface->CreateSession(0, sessionID, sessionSettings);
@@ -48,9 +53,9 @@ void UServerGameInstance::CreateMySession(FString roomName, int32 playerCount)
 void UServerGameInstance::FindMySession()
 {
 	sessionSearch = MakeShareable(new FOnlineSessionSearch());
-	sessionSearch->bIsLanQuery = IOnlineSubsystem::Get()->GetSubsystemName() == "Null";
+	sessionSearch->bIsLanQuery = IOnlineSubsystem::Get()->GetSubsystemName() == "NULL";
 	sessionSearch->MaxSearchResults = 30;
-	sessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::GreaterThanEquals);
+	sessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
 	sessionInterface->FindSessions(0, sessionSearch.ToSharedRef());
 }
 
