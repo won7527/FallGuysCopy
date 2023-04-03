@@ -105,6 +105,7 @@ void AFallGuysCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 		InputSystem->BindAction(IA_ChaJump, ETriggerEvent::Completed, this, &AFallGuysCharacter::StopJumping);
 		InputSystem->BindAction(IA_Dash, ETriggerEvent::Triggered, this, &AFallGuysCharacter::Dash);
 		InputSystem->BindAction(IA_Hold, ETriggerEvent::Triggered, this, &AFallGuysCharacter::Holding);
+		InputSystem->BindAction(IA_Hold, ETriggerEvent::Completed, this, &AFallGuysCharacter::Release);
 
 
 
@@ -166,11 +167,8 @@ void AFallGuysCharacter::Holding()
 	if (isOverlap == true)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("OverLapHold"));
+		GetCharacterMovement()->MaxWalkSpeed = 100;
 
-	}
-	else
-	{
-		return;
 	}
 
 }
@@ -187,4 +185,9 @@ void AFallGuysCharacter::Dash()
 		
 	}
 	
+}
+
+void AFallGuysCharacter::Release()
+{
+	GetCharacterMovement()->MaxWalkSpeed = 300;
 }

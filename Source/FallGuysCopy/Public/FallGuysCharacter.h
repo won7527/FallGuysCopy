@@ -62,6 +62,8 @@ public:
 	void StopJumping();
 	void Holding();
 	void Dash();
+	void Release();
+
 	//¿‚±‚
 	UFUNCTION()
 	void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -87,5 +89,6 @@ public:
 	UPROPERTY()
 		bool IsCool;
 
+	
 
 };
