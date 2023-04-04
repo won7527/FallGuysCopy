@@ -52,6 +52,7 @@ void ULoginWidget::ClickLogin()
 	{
 
 		widgetSwicher->SetActiveWidgetIndex(2);
+		gameInstance->sessionID = FName(editText_id->GetText().ToString());
 	}
 	
 }
