@@ -29,6 +29,11 @@ public:
 		class UBoxComponent* BoxComp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class UStaticMeshComponent* MeshComp;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UOverEndWidget> gameOver;
+
+	UPROPERTY()
+	class UOverEndWidget* gameOver_UI;
 
 	UFUNCTION()
 		void OnOverlapped(AActor* OverlappedActor, AActor* OtherActor);

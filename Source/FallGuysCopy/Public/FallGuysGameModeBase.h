@@ -14,4 +14,36 @@ class FALLGUYSCOPY_API AFallGuysGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+protected:
+	virtual void BeginPlay() override;
+
+
+public:
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UEndingWidget> ending;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class ULoginWidget> loging;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UOverEndWidget> gameOver;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UVictoryWidget> victoring;
+
+
+
+	UPROPERTY()
+	class UEndingWidget* ending_UI;
+
+	UPROPERTY()
+	class ULoginWidget* login_UI;
+
+	UPROPERTY()
+	class UOverEndWidget* gameOver_UI;
+
+	UPROPERTY()
+	class UVictoryWidget* victory_UI;
+
+	void Ending();
+	void GameOverEnding();
+	void VictoryEnding();
+
 };
