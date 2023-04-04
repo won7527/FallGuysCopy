@@ -14,6 +14,7 @@ void USessionSlotWidget::NativeConstruct()
 
 void USessionSlotWidget::JoinRoom()
 {
+	UE_LOG(LogTemp, Warning, TEXT("ASDAAS"));
 	if (gameInstance != nullptr)
 	{
 		gameInstance->JoinMySession(index);
