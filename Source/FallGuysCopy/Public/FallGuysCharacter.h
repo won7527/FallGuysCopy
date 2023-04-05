@@ -51,6 +51,9 @@ public:
 
 	class UPlayerAnim* PlayerAnim;
 	
+	UPROPERTY(EditAnywhere)
+		class UWidgetComponent* PlayerInfo;
+	
 	//잡기범위
 	UPROPERTY(EditAnywhere, Category = "Hold")
 	float HoldRange = 50;
@@ -89,6 +92,43 @@ public:
 	UPROPERTY()
 		bool IsCool;
 
+	UPROPERTY(Replicated)
+		FString PlayerName;
+
+	UPROPERTY()
+		float Timer;
 	
+	UPROPERTY(Replicated)
+		int32 AllPlayerNum;
+	UPROPERTY(Replicated)
+		int32 GameOverPlayerNum;
+
+	bool IsMain;
+	
+
+	UPROPERTY()
+		class UServerGameInstance* GameInstance;
+
+	UPROPERTY()
+		class UPlayerInfoWidget* InfoWidget;
+	UPROPERTY()
+		class AFallGuysPlayerController* PlayerController;
+	
+	
+	UFUNCTION(Server, Unreliable)
+		void ServerSetName(const FString& name);	
+	
+	UFUNCTION(Server, Unreliable)
+		void ServerSetTimer(float GameTime);
+	UFUNCTION(NetMulticast, Unreliable)
+		void MulticastSetTimer(float GameTime);
+	
+	UFUNCTION(Server, Unreliable)
+		void ServerSetDeadNum();
+
+
+	void SetPlayerNum(int32 GameOverNum, int32 AllNum);
+
+	class APointActor* PointActor;
 
 };

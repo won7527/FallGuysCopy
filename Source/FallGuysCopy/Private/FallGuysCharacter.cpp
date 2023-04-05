@@ -13,6 +13,16 @@
 #include "PlayerAnim.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Components/WidgetComponent.h"
+#include "Net/UnrealNetwork.h"
+#include "ServerGameInstance.h"
+#include "PlayerInfoWidget.h"
+#include "FallGuysPlayerController.h"
+#include "InGameWidget.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/GameStateBase.h"
+#include "PointActor.h"
+
 
 
 // Sets default values
@@ -35,6 +45,10 @@ AFallGuysCharacter::AFallGuysCharacter()
 	cameraComp->SetupAttachment(springArm);
 	cameraComp->bUsePawnControlRotation = true;
 
+	PlayerInfo = CreateDefaultSubobject<UWidgetComponent>(TEXT("PlayerInfo"));
+	PlayerInfo->SetupAttachment(RootComponent);
+	PlayerInfo->SetRelativeLocation(FVector(0, 0, 60));
+	PlayerInfo->SetRelativeScale3D(FVector(0.3f));
 
 }
 
@@ -50,27 +64,44 @@ void AFallGuysCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	auto PC = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
+	PlayerController = Cast<AFallGuysPlayerController>(GetWorld()->GetFirstPlayerController());
+	GameInstance = Cast<UServerGameInstance>(GetGameInstance());
+	InfoWidget = Cast<UPlayerInfoWidget>(PlayerInfo->GetWidget());
+	PointActor = Cast<APointActor>(UGameplayStatics::GetActorOfClass(GetWorld(), APointActor::StaticClass()));
+	
+	IsMain = FString("MainMap") == UGameplayStatics::GetCurrentLevelName(GetWorld());
 
-	if (PC)
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AFallGuysCharacter::OnOverlap);
+
+	if (PlayerController)
 	{
-		auto localPlayer = PC->GetLocalPlayer();
+		auto localPlayer = PlayerController->GetLocalPlayer();
 		auto subSystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(localPlayer);
 		if (subSystem)
 		{
 			subSystem->AddMappingContext(IMC_ChaInput,0);
 		}
+
+		if (PlayerController->IsLocalController())
+		{
+			ServerSetName(GameInstance->sessionID.ToString());
+		}
 	}
-
-	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AFallGuysCharacter::OnOverlap);
-
-
+	
+	if (HasAuthority())
+	{
+		GameOverPlayerNum = 0;
+	}
 }
 
 // Called every frame
 void AFallGuysCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+
+	InfoWidget->SetName(PlayerName);
+
 
 	if (PlayerAnim)
 	{
@@ -87,6 +118,30 @@ void AFallGuysCharacter::Tick(float DeltaTime)
 				IsCool = false;
 			}
 	}
+	if (IsMain)
+	{
+		if (HasAuthority() && IsLocallyControlled())
+		{
+			Timer += DeltaTime;
+			ServerSetTimer(Timer);
+			
+			
+		}
+		if (GetController() != nullptr && GetController()->IsLocalController())
+		{
+			if (GetWorld()->GetGameState()->PlayerArray.Num() > AllPlayerNum)
+			{
+				AllPlayerNum = GetWorld()->GetGameState()->PlayerArray.Num();
+			}
+			if (PointActor)
+			{
+				SetPlayerNum(PointActor->DeadPoints, AllPlayerNum);
+			}
+			
+		}
+	}
+	
+
 }
 
 // Called to bind functionality to input
@@ -111,6 +166,45 @@ void AFallGuysCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 	}
 }
+
+void AFallGuysCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AFallGuysCharacter, PlayerName);
+	DOREPLIFETIME(AFallGuysCharacter, GameOverPlayerNum);
+	DOREPLIFETIME(AFallGuysCharacter, AllPlayerNum);
+
+}
+
+void AFallGuysCharacter::ServerSetName_Implementation(const FString& name)
+{
+	PlayerName = name;
+
+}
+
+void AFallGuysCharacter::ServerSetTimer_Implementation(float GameTime)
+{
+	MulticastSetTimer(GameTime);
+}
+
+void AFallGuysCharacter::MulticastSetTimer_Implementation(float GameTime)
+{
+	PlayerController->GameUI->TimerSet(GameTime);
+}
+
+
+void AFallGuysCharacter::SetPlayerNum(int32 GameOverNum, int32 AllNum)
+{
+	PlayerController->GameUI->PlayerNumSet(GameOverNum, AllNum);
+}
+
+void AFallGuysCharacter::ServerSetDeadNum_Implementation()
+{
+	GameOverPlayerNum++;
+	PointActor->DeadPoints += GameOverPlayerNum;
+}
+
 
 void AFallGuysCharacter::Move(const FInputActionValue& Values)
 {

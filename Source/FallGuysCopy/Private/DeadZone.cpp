@@ -41,12 +41,13 @@ void ADeadZone::Tick(float DeltaTime)
 void ADeadZone::OnOverlapped(AActor* OverlappedActor, AActor* OtherActor)
 {
 	Player = Cast<AFallGuysCharacter>(OtherActor);
-	if (Player)
+	if (Player && HasAuthority())
 	{
 		Player->SetActorHiddenInGame(true);
 		Player->DisableInput(Cast<APlayerController>(GetWorld()->GetFirstPlayerController()));
 		gameOver_UI->AddToViewport();
 		gameOver_UI->PlayAnimationByName();
 
+		Player->ServerSetDeadNum();
 	}
 }
