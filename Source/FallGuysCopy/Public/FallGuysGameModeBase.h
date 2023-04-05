@@ -32,15 +32,15 @@ public:
 
 	UPROPERTY()
 	class UEndingWidget* ending_UI;
-
 	UPROPERTY()
 	class ULoginWidget* login_UI;
-
 	UPROPERTY()
 	class UOverEndWidget* gameOver_UI;
-
 	UPROPERTY()
 	class UVictoryWidget* victory_UI;
+
+	//UPROPERTY()
+	//class ALevelSequenceActor* gameSequence;
 
 	void Ending();
 	void GameOverEnding();
