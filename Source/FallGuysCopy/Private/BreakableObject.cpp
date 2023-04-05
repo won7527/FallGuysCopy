@@ -166,7 +166,7 @@ void ABreakableObject::Tick(float DeltaTime)
 
 void ABreakableObject::BreakableObjectBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
-	UE_LOG(LogTemp, Warning, TEXT("IsIn"));
+
 	IsOnObject = true;
 	if (!Player)
 	{
@@ -177,7 +177,7 @@ void ABreakableObject::BreakableObjectBeginOverlap(AActor* OverlappedActor, AAct
 
 void ABreakableObject::BreakableObjectEndOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
-	UE_LOG(LogTemp, Warning, TEXT("IsOut"));
+	
 	IsOnObject = false;
 	Timer = 0;
 	if (Player)

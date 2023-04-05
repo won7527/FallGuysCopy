@@ -22,5 +22,11 @@ public:
 	UPROPERTY(meta = (BindWidget))
 		class UTextBlock* Second;
 
+	UPROPERTY(meta = (BindWidget))
+		class UTextBlock* GameOverPlayer;
+	UPROPERTY(meta = (BindWidget))
+		class UTextBlock* GamePlayer;
+
 	void TimerSet(float Timer);
+	void PlayerNumSet(int32 GameOverNum, int32 AllNum);
 };

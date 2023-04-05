@@ -98,6 +98,10 @@ public:
 	UPROPERTY()
 		float Timer;
 	
+	UPROPERTY(Replicated)
+		int32 AllPlayerNum;
+	UPROPERTY(Replicated)
+		int32 GameOverPlayerNum;
 
 	bool IsMain;
 	
@@ -119,5 +123,12 @@ public:
 	UFUNCTION(NetMulticast, Unreliable)
 		void MulticastSetTimer(float GameTime);
 	
+	UFUNCTION(Server, Unreliable)
+		void ServerSetDeadNum();
+
+
+	void SetPlayerNum(int32 GameOverNum, int32 AllNum);
+
+	class APointActor* PointActor;
 
 };
