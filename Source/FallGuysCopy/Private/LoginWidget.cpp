@@ -128,3 +128,8 @@ void ULoginWidget::QuitGame()
 	APlayerController* playerCon = GetWorld()->GetFirstPlayerController();
 	UKismetSystemLibrary::QuitGame(GetWorld(), playerCon, EQuitPreference::Quit, true);
 }
+
+void ULoginWidget::PlayMusic()
+{
+
+}

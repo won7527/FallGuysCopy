@@ -13,10 +13,21 @@ UCLASS()
 class FALLGUYSCOPY_API UOverEndWidget : public UUserWidget
 {
 	GENERATED_BODY()
+
+	virtual void NativeConstruct() override;
+
 	
 public:
-	void PlayAnimationByName();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
 	class UWidgetAnimation* OverAnimation;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UButton* btn_Quit;
+
+	UFUNCTION()
+	void QuitGame();
+
+	void PlayAnimationByName();
+
 };

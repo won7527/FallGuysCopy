@@ -95,4 +95,6 @@ public:
 	void RefreshEnabled();
 	UFUNCTION()
 	void QuitGame();
+	UFUNCTION()
+	void PlayMusic();
 };
