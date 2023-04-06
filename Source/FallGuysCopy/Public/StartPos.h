@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "PointActor.generated.h"
+#include "StartPos.generated.h"
 
 UCLASS()
-class FALLGUYSCOPY_API APointActor : public AActor
+class FALLGUYSCOPY_API AStartPos : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	APointActor();
+	AStartPos();
 
 protected:
 	// Called when the game starts or when spawned
@@ -23,11 +23,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(Replicated)
-		int32 DeadPoints = 0;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
-		bool IsSeqStart;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
-		bool IsSeqFinish;
+public:
+	class APointActor* PointActor;
+
+	bool IsHide;
 
 };
