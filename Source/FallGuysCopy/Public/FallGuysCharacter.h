@@ -46,6 +46,17 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	class UCameraComponent* cameraComp;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class UOverEndWidget> GameOverWidget;
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class UVictoryWidget> VictoryWidget;
+
+	UPROPERTY()
+		class UOverEndWidget* GameOverUI;
+	UPROPERTY()
+		class UVictoryWidget* VictoryUI;
+
 	UPROPERTY(EditAnywhere)
 	class USpringArmComponent* springArm;
 
@@ -115,6 +126,7 @@ public:
 		class AFallGuysPlayerController* PlayerController;
 	
 	
+	
 	UFUNCTION(Server, Unreliable)
 		void ServerSetName(const FString& name);	
 	
@@ -124,11 +136,20 @@ public:
 		void MulticastSetTimer(float GameTime);
 	
 	UFUNCTION(Server, Unreliable)
+		void ServerSetRoomVisibility();
+	UFUNCTION(NetMulticast, Unreliable)
+		void MulticastSetRoomVisibility();
+
+	UFUNCTION(Server, Unreliable)
 		void ServerSetDeadNum();
 
 
 	void SetPlayerNum(int32 GameOverNum, int32 AllNum);
 
 	class APointActor* PointActor;
+	
+	bool IsWaitingRoom = true;
+
+	bool IsEnd;
 
 };

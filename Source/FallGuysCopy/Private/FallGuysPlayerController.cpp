@@ -5,6 +5,7 @@
 #include "InGameWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "FallGuysCharacter.h"
+#include "WaitingRoomWidget.h"
 
 void AFallGuysPlayerController::BeginPlay()
 {
@@ -14,10 +15,12 @@ void AFallGuysPlayerController::BeginPlay()
 	if (InGameUI && IsLocalController() && IsMain)
 	{
 		GameUI = CreateWidget<UInGameWidget>(this, InGameUI);
-		if (GameUI)
-		{
-			GameUI->AddToViewport(true);
+		WaitingRoomWidget = CreateWidget<UWaitingRoomWidget>(this, WaitingRoomUI);
 
+		if (WaitingRoomWidget)
+		{
+			WaitingRoomWidget->AddToViewport(true);
+			SetShowMouseCursor(true);
 		}
 	}
 }

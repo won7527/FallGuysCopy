@@ -23,4 +23,10 @@ public:
 
 		UPROPERTY()
 			class UInGameWidget* GameUI;
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite)
+			TSubclassOf<class UWaitingRoomWidget> WaitingRoomUI;
+		
+		UPROPERTY()
+			class UWaitingRoomWidget* WaitingRoomWidget;
 };

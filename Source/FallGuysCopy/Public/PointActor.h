@@ -25,5 +25,6 @@ public:
 
 	UPROPERTY(Replicated)
 		int32 DeadPoints = 0;
+	
 
 };

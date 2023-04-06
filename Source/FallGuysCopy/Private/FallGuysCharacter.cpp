@@ -22,7 +22,10 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/GameStateBase.h"
 #include "PointActor.h"
-
+#include "OverEndWidget.h"
+#include "VictoryWidget.h"
+#include "WaitingRoomWidget.h"
+#include "GameFramework/PlayerState.h"
 
 
 // Sets default values
@@ -63,7 +66,10 @@ void AFallGuysCharacter::PostInitializeComponents()
 void AFallGuysCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	//GameOverUI = CreateWidget<UOverEndWidget>(GetWorld(), GameOverWidget);
+	//VictoryUI = CreateWidget<UVictoryWidget>(GetWorld(), VictoryWidget);
+
 	PlayerController = Cast<AFallGuysPlayerController>(GetWorld()->GetFirstPlayerController());
 	GameInstance = Cast<UServerGameInstance>(GetGameInstance());
 	InfoWidget = Cast<UPlayerInfoWidget>(PlayerInfo->GetWidget());
@@ -118,7 +124,21 @@ void AFallGuysCharacter::Tick(float DeltaTime)
 				IsCool = false;
 			}
 	}
-	if (IsMain)
+	if (IsMain && IsWaitingRoom)
+	{
+		
+		for (int32 i = 0; i < GetWorld()->GetGameState()->PlayerArray.Num(); i++)
+		{
+			TArray<APlayerState*> PlayerList(GetWorld()->GetGameState()->PlayerArray);
+			PlayerController->WaitingRoomWidget->SetPlayerName(i, PlayerList[i]->GetPlayerName());
+		
+		}
+		
+		
+
+	}
+
+	if (IsMain && !IsWaitingRoom)
 	{
 		if (HasAuthority() && IsLocallyControlled())
 		{
@@ -137,6 +157,26 @@ void AFallGuysCharacter::Tick(float DeltaTime)
 			{
 				SetPlayerNum(PointActor->DeadPoints, AllPlayerNum);
 			}
+
+			if (!IsEnd)
+			{
+				if (GameOverPlayerNum != 0)
+				{
+					IsEnd = true;
+					GameOverUI = CreateWidget<UOverEndWidget>(GetWorld(), GameOverWidget);
+					GameOverUI->AddToViewport();
+					GameOverUI->PlayAnimationByName();
+
+				}
+				else if (AllPlayerNum > 1 && AllPlayerNum - PointActor->DeadPoints == 1)
+				{
+					IsEnd = true;
+					VictoryUI = CreateWidget<UVictoryWidget>(GetWorld(), VictoryWidget);
+					VictoryUI->AddToViewport();
+					VictoryUI->PlayAnimationByName();
+				}
+			}
+			
 			
 		}
 	}
@@ -191,6 +231,17 @@ void AFallGuysCharacter::ServerSetTimer_Implementation(float GameTime)
 void AFallGuysCharacter::MulticastSetTimer_Implementation(float GameTime)
 {
 	PlayerController->GameUI->TimerSet(GameTime);
+}
+
+void AFallGuysCharacter::ServerSetRoomVisibility_Implementation()
+{
+	MulticastSetRoomVisibility();
+}
+
+void AFallGuysCharacter::MulticastSetRoomVisibility_Implementation()
+{
+	PlayerController->SetShowMouseCursor(false);
+	PlayerController->WaitingRoomWidget->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 

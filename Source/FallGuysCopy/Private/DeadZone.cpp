@@ -6,8 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "FallGuysCharacter.h"
 #include "FallGuysGameModeBase.h"
-#include "OverEndWidget.h"
-#include <UMG/Public/Blueprint/UserWidget.h>
+
 
 
 // Sets default values
@@ -28,7 +27,7 @@ ADeadZone::ADeadZone()
 void ADeadZone::BeginPlay()
 {
 	Super::BeginPlay();
-	gameOver_UI = CreateWidget<UOverEndWidget>(GetWorld(), gameOver);
+	
 }
 
 // Called every frame
@@ -45,9 +44,6 @@ void ADeadZone::OnOverlapped(AActor* OverlappedActor, AActor* OtherActor)
 	{
 		Player->SetActorHiddenInGame(true);
 		Player->DisableInput(Cast<APlayerController>(GetWorld()->GetFirstPlayerController()));
-		gameOver_UI->AddToViewport();
-		gameOver_UI->PlayAnimationByName();
-
 		Player->ServerSetDeadNum();
 	}
 }
