@@ -25,6 +25,9 @@ public:
 
 	UPROPERTY(Replicated)
 		int32 DeadPoints = 0;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
+		bool IsSeqStart;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
+		bool IsSeqFinish;
 
 };

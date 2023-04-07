@@ -28,6 +28,9 @@
 #include "GameFramework/PlayerState.h"
 
 
+
+
+
 // Sets default values
 AFallGuysCharacter::AFallGuysCharacter()
 {
@@ -74,7 +77,7 @@ void AFallGuysCharacter::BeginPlay()
 	GameInstance = Cast<UServerGameInstance>(GetGameInstance());
 	InfoWidget = Cast<UPlayerInfoWidget>(PlayerInfo->GetWidget());
 	PointActor = Cast<APointActor>(UGameplayStatics::GetActorOfClass(GetWorld(), APointActor::StaticClass()));
-	
+
 	IsMain = FString("MainMap") == UGameplayStatics::GetCurrentLevelName(GetWorld());
 
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AFallGuysCharacter::OnOverlap);
@@ -85,15 +88,18 @@ void AFallGuysCharacter::BeginPlay()
 		auto subSystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(localPlayer);
 		if (subSystem)
 		{
-			subSystem->AddMappingContext(IMC_ChaInput,0);
+			subSystem->AddMappingContext(IMC_ChaInput, 0);
 		}
 
 		if (PlayerController->IsLocalController())
 		{
 			ServerSetName(GameInstance->sessionID.ToString());
+
+		
+			
 		}
 	}
-	
+
 	if (HasAuthority())
 	{
 		GameOverPlayerNum = 0;
@@ -130,12 +136,18 @@ void AFallGuysCharacter::Tick(float DeltaTime)
 		for (int32 i = 0; i < GetWorld()->GetGameState()->PlayerArray.Num(); i++)
 		{
 			TArray<APlayerState*> PlayerList(GetWorld()->GetGameState()->PlayerArray);
-			PlayerController->WaitingRoomWidget->SetPlayerName(i, PlayerList[i]->GetPlayerName());
+			PlayerController->WaitingRoomWidget->SetPlayerName(i, *PlayerList[i]->GetPlayerName());
+			
+
 		
 		}
+	
 		
+	}
+	if (IsMain && PointActor->IsSeqFinish && IsWaitingRoom)
+	{
+		IsWaitingRoom = false;
 		
-
 	}
 
 	if (IsMain && !IsWaitingRoom)
@@ -166,6 +178,7 @@ void AFallGuysCharacter::Tick(float DeltaTime)
 					GameOverUI = CreateWidget<UOverEndWidget>(GetWorld(), GameOverWidget);
 					GameOverUI->AddToViewport();
 					GameOverUI->PlayAnimationByName();
+					PlayerController->GameUI->SetVisibility(ESlateVisibility::Collapsed);
 
 				}
 				else if (AllPlayerNum > 1 && AllPlayerNum - PointActor->DeadPoints == 1)
@@ -174,6 +187,7 @@ void AFallGuysCharacter::Tick(float DeltaTime)
 					VictoryUI = CreateWidget<UVictoryWidget>(GetWorld(), VictoryWidget);
 					VictoryUI->AddToViewport();
 					VictoryUI->PlayAnimationByName();
+					PlayerController->GameUI->SetVisibility(ESlateVisibility::Collapsed);
 				}
 			}
 			
@@ -196,9 +210,10 @@ void AFallGuysCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 		InputSystem->BindAction(IA_ChaMove, ETriggerEvent::Triggered, this, &AFallGuysCharacter::Move);
 		InputSystem->BindAction(IA_ChaMove, ETriggerEvent::Completed, this, &AFallGuysCharacter::MoveEnd);
 		InputSystem->BindAction(IA_ChaLook, ETriggerEvent::Triggered, this, &AFallGuysCharacter::Look);
-		InputSystem->BindAction(IA_ChaJump, ETriggerEvent::Triggered, this, &AFallGuysCharacter::Jumping);
+		InputSystem->BindAction(IA_ChaJump, ETriggerEvent::Triggered, this, &AFallGuysCharacter::ServerJump);
 		InputSystem->BindAction(IA_ChaJump, ETriggerEvent::Completed, this, &AFallGuysCharacter::StopJumping);
-		InputSystem->BindAction(IA_Dash, ETriggerEvent::Triggered, this, &AFallGuysCharacter::Dash);
+		//InputSystem->BindAction(IA_Dash, ETriggerEvent::Triggered, this, &AFallGuysCharacter::Dash);
+		InputSystem->BindAction(IA_Dash, ETriggerEvent::Triggered, this, &AFallGuysCharacter::ServerDash);
 		InputSystem->BindAction(IA_Hold, ETriggerEvent::Triggered, this, &AFallGuysCharacter::Holding);
 		InputSystem->BindAction(IA_Hold, ETriggerEvent::Completed, this, &AFallGuysCharacter::Release);
 
@@ -221,6 +236,13 @@ void AFallGuysCharacter::ServerSetName_Implementation(const FString& name)
 {
 	PlayerName = name;
 
+	APlayerState* PS = GetPlayerState();
+	if (PS)
+	{
+		PS->SetPlayerName(name);
+	}
+
+
 }
 
 void AFallGuysCharacter::ServerSetTimer_Implementation(float GameTime)
@@ -230,6 +252,12 @@ void AFallGuysCharacter::ServerSetTimer_Implementation(float GameTime)
 
 void AFallGuysCharacter::MulticastSetTimer_Implementation(float GameTime)
 {
+	if (!IsViewport)
+	{
+		IsViewport = true;
+		PlayerController->GameUI->AddToViewport();
+	}
+	
 	PlayerController->GameUI->TimerSet(GameTime);
 }
 
@@ -242,6 +270,8 @@ void AFallGuysCharacter::MulticastSetRoomVisibility_Implementation()
 {
 	PlayerController->SetShowMouseCursor(false);
 	PlayerController->WaitingRoomWidget->SetVisibility(ESlateVisibility::Collapsed);
+	PointActor->IsSeqStart = true;
+	
 }
 
 
@@ -335,4 +365,22 @@ void AFallGuysCharacter::Dash()
 void AFallGuysCharacter::Release()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 300;
+}
+
+void AFallGuysCharacter::ServerJump_Implementation()
+{
+	MulticastJump();
+}
+void AFallGuysCharacter::MulticastJump_Implementation()
+{
+	Jumping();
+}
+
+void AFallGuysCharacter::ServerDash_Implementation()
+{
+	MulticastDash();
+}
+void AFallGuysCharacter::MulticastDash_Implementation()
+{
+	Dash();
 }

@@ -2,11 +2,8 @@
 
 
 #include "FallGuysGameModeBase.h"
-#include "Blueprint/UserWidget.h"
-#include "EndingWidget.h"
-#include "LoginWidget.h"
-#include "OverEndWidget.h"
-#include "VictoryWidget.h"
+#include "EngineUtils.h"
+#include "GameFramework/PlayerStart.h"
 
 
 
@@ -15,42 +12,21 @@ void AFallGuysGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ending_UI = CreateWidget<UEndingWidget> (GetWorld(), ending);
-	//login_UI = CreateWidget<ULoginWidget>(GetWorld(), loging);
-	gameOver_UI = CreateWidget<UOverEndWidget>(GetWorld(), gameOver);
-	victory_UI = CreateWidget<UVictoryWidget>(GetWorld(), victoring);
-	//if (login_UI != nullptr)
-	//{
-	//	login_UI->AddToViewport();
-	//}
 	
-	//Sequencer
 
 }
 
-void AFallGuysGameModeBase::Ending()
+AActor* AFallGuysGameModeBase::ChoosePlayerStart_Implementation(AController* player)
 {
-	if (ending_UI != nullptr)
+	for (TActorIterator<APlayerStart> Iter(GetWorld()); Iter; ++Iter)
 	{
-		ending_UI->AddToViewport();
-		ending_UI->PlayAnimationByName();
+		APlayerStart* PS = *Iter;
+		if (PS->PlayerStartTag != FName("Spawned"))
+		{
+			PS->PlayerStartTag = FName("Spawned");
+			return PS;
+		}
 	}
+	return nullptr;
 }
 
-void AFallGuysGameModeBase::GameOverEnding()
-{
-	if (gameOver_UI != nullptr)
-	{
-		gameOver_UI->AddToViewport();
-		gameOver_UI->PlayAnimationByName();
-	}
-}
-
-void AFallGuysGameModeBase::VictoryEnding()
-{
-	if (victory_UI != nullptr)
-	{
-		victory_UI->AddToViewport();
-		victory_UI->PlayAnimationByName();
-	}
-}

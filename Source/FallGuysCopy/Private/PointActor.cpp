@@ -16,7 +16,7 @@ APointActor::APointActor()
 void APointActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
@@ -31,7 +31,8 @@ void APointActor::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLif
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(APointActor, DeadPoints);
+	DOREPLIFETIME(APointActor, IsSeqStart);
+	DOREPLIFETIME(APointActor, IsSeqFinish);
 
 }
-
 

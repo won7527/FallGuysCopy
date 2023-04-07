@@ -152,4 +152,15 @@ public:
 
 	bool IsEnd;
 
+	bool IsViewport;
+
+
+	UFUNCTION(Server, Unreliable)
+		void ServerJump();
+	UFUNCTION(NetMulticast, Unreliable)
+		void MulticastJump();
+	UFUNCTION(Server, Unreliable)
+		void ServerDash();
+	UFUNCTION(NetMulticast, Unreliable)
+		void MulticastDash();
 };
