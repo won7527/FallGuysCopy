@@ -311,8 +311,12 @@ void AFallGuysCharacter::Holding()
 	UE_LOG(LogTemp, Warning, TEXT("Hold"));
 	if (isOverlap == true)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("OverLapHold"));
-		GetCharacterMovement()->MaxWalkSpeed = 100;
+		if (!GetOwner())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("OverLapHold"));
+			GetCharacterMovement()->MaxWalkSpeed = 100;
+			
+		}
 
 	}
 
