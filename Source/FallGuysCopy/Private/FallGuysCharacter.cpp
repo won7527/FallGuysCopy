@@ -210,7 +210,7 @@ void AFallGuysCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 		InputSystem->BindAction(IA_ChaMove, ETriggerEvent::Triggered, this, &AFallGuysCharacter::Move);
 		InputSystem->BindAction(IA_ChaMove, ETriggerEvent::Completed, this, &AFallGuysCharacter::MoveEnd);
 		InputSystem->BindAction(IA_ChaLook, ETriggerEvent::Triggered, this, &AFallGuysCharacter::Look);
-		InputSystem->BindAction(IA_ChaJump, ETriggerEvent::Triggered, this, &AFallGuysCharacter::Jumping);
+		InputSystem->BindAction(IA_ChaJump, ETriggerEvent::Triggered, this, &AFallGuysCharacter::ServerJump);
 		InputSystem->BindAction(IA_ChaJump, ETriggerEvent::Completed, this, &AFallGuysCharacter::StopJumping);
 		//InputSystem->BindAction(IA_Dash, ETriggerEvent::Triggered, this, &AFallGuysCharacter::Dash);
 		InputSystem->BindAction(IA_Dash, ETriggerEvent::Triggered, this, &AFallGuysCharacter::ServerDash);
@@ -367,6 +367,14 @@ void AFallGuysCharacter::Release()
 	GetCharacterMovement()->MaxWalkSpeed = 300;
 }
 
+void AFallGuysCharacter::ServerJump_Implementation()
+{
+	MulticastJump();
+}
+void AFallGuysCharacter::MulticastJump_Implementation()
+{
+	Jumping();
+}
 
 void AFallGuysCharacter::ServerDash_Implementation()
 {
