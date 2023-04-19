@@ -30,7 +30,7 @@ void UWaitingRoomWidget::GameStart()
 void UWaitingRoomWidget::SetPlayerName(int32 Index, FString Name)
 {
 	
-	//TextBlockArr[Index]->SetText(FText::FromString(Name));
-	TextBlockArr[Index]->SetText(FText::FromString(FString("Ready!!")));
+	TextBlockArr[Index]->SetText(FText::FromString(Name));
+	//TextBlockArr[Index]->SetText(FText::FromString(FString("Ready!!")));
 	
 }

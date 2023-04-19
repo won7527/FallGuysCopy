@@ -19,31 +19,7 @@ protected:
 
 
 public:
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UEndingWidget> ending;
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<class ULoginWidget> loging;
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UOverEndWidget> gameOver;
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UVictoryWidget> victoring;
-
-
-
-	UPROPERTY()
-	class UEndingWidget* ending_UI;
-	UPROPERTY()
-	class ULoginWidget* login_UI;
-	UPROPERTY()
-	class UOverEndWidget* gameOver_UI;
-	UPROPERTY()
-	class UVictoryWidget* victory_UI;
-
-	//UPROPERTY()
-	//class ALevelSequenceActor* gameSequence;
-
-	void Ending();
-	void GameOverEnding();
-	void VictoryEnding();
+	
+	virtual AActor* ChoosePlayerStart_Implementation(AController* player) override;
 
 };
